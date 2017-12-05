@@ -1,0 +1,8 @@
+package gocatdb
+
+
+func New() {
+
+}
+
+
