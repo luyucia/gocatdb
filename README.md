@@ -31,3 +31,28 @@ data := []map[string]interface{}{
 
 
 ```
+### 初始化
+```
+cdb := gocatdb.Catdb{}
+cdb.BindDb(db,"mysql")
+db为数据库连接
+mysql为数据库方言类型
+```
+### 根据map创建表
+```
+cdb.Table("test").Create(mapdata).Execute()
+```
+### 插入数据
+```
+cdb.Table("test").Insert(data)
+data 可以是一个map
+可以是一个map slice
+
+```
+### 查询
+```
+cdb.Query(sql)
+返回一个map slice
+```
+### 修改
+### 删除
