@@ -5,7 +5,7 @@ import (
 // "database/sql"
 // "log"
 // "reflect"
-"fmt"
+// "fmt"
 )
 
 
@@ -28,20 +28,7 @@ func (this *Catdb) insert_map_slice(data []map[string]interface{}){
         }
     }
 
-    stmt,err := this.db.Prepare(this.sql)
-    if err!=nil {
-        fmt.Println("Exec error:", err)
-        panic(err)
-    }
-
-    _,err = stmt.Exec(values...)
-
-    if err!=nil {
-        fmt.Println("Exec error:", err)
-        panic(err)
-    }
-
-    stmt.Close()
+    this.Exec(values...)
 
 }
 
@@ -58,22 +45,7 @@ func (this *Catdb) insert_map(data map[string]interface{}){
         values = append(values,data[field])
     }
 
-
-    stmt,err := this.db.Prepare(this.sql)
-    if err!=nil {
-        fmt.Println("Exec error:", err)
-        panic(err)
-    }
-
-    _,err = stmt.Exec(values...)
-
-    if err!=nil {
-        fmt.Println("Exec error:", err)
-        panic(err)
-    }
-
-    stmt.Close()
-
+    this.Exec(values...)
 }
 
 

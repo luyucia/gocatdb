@@ -5,7 +5,7 @@ import (
 "database/sql"
 "log"
 "reflect"
-// "fmt"
+"fmt"
 )
 
 type Catdb struct{
@@ -51,15 +51,51 @@ func (this *Catdb) Insert(data interface{}) (*Catdb){
     return this
 }
 
-
-
-
-
-
-func (this *Catdb) Create(data map[string]interface{}) (*Catdb){
+func (this *Catdb) Update(data map[string]interface{},condition string) {
     var sql bytes.Buffer
 
-    sql.WriteString("create table ")
+    sql.WriteString("UPDATE ")
+    sql.WriteString(this.tablename)
+    sql.WriteString(" set ")
+    // 遍历key放入slice 保持顺序
+    vals := []interface{}{}
+    first := true
+    for column,val := range data{
+        vals = append(vals,val)
+        if first==false {
+            sql.WriteString(",")
+        }
+        sql.WriteString(column+"=?")
+        first = false
+    }
+    sql.WriteString(" where ")
+    sql.WriteString(condition)
+
+    this.sql = sql.String()
+    fmt.Println(this.sql)
+    this.Exec(vals...)
+}
+
+
+func (this *Catdb) Delete(condition string)(sql.Result) {
+    var sql bytes.Buffer
+
+    sql.WriteString("DELETE FROM ")
+    sql.WriteString(this.tablename)
+    sql.WriteString(" where ")
+    sql.WriteString(condition)
+
+    this.sql = sql.String()
+    fmt.Println(this.sql)
+    return this.Execute()
+}
+
+
+
+func (this *Catdb) Create(data map[string]interface{}) (sql.Result){
+    var sql bytes.Buffer
+
+    sql.WriteString("CREATE TABLE ")
     sql.WriteString(this.tablename)
     sql.WriteString(" ( ")
     first := true
@@ -75,7 +111,8 @@ func (this *Catdb) Create(data map[string]interface{}) (*Catdb){
     sql.WriteString(" ); ")
 
     this.sql = sql.String()
-    return this
+    return this.Execute()
+    // return this
 }
 
 
@@ -102,7 +139,7 @@ func (this *Catdb) Query(query string) ([]map[string]interface{}){
         for i:=0 ; i<length ;i++{
             columnName := columns[i]
             columnValue := row[i]
-            // fmt.Println(reflect.TypeOf(columnValue))
+            // fmt.Println(reflect.ValueOf(columnValue).Type())
             tmpmap[columnName] = columnValue
 
         }
@@ -122,8 +159,28 @@ func (this *Catdb) Execute() (sql.Result){
         log.Println(err)
     }
     res,err := stmt.Exec()
+    if err!=nil{
+        log.Println(err)
+    }
     return res
     // return this.sql
+}
+
+func (this *Catdb) Exec(args ...interface{}) {
+    stmt,err := this.db.Prepare(this.sql)
+    if err!=nil {
+        fmt.Println("Exec error:", err)
+        panic(err)
+    }
+
+    _,err = stmt.Exec(args...)
+
+    if err!=nil {
+        fmt.Println("Exec error:", err)
+        panic(err)
+    }
+
+    stmt.Close()
 }
 
 
