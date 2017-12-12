@@ -1,7 +1,9 @@
 # gocatdb
 
+
+Example:
 ```
-data := []map[string]interface{}{
+    data := []map[string]interface{}{
         map[string]interface{}{"id":1,"uv":101.1,"pv":10,"name":"luyu","city":"长春"},
         map[string]interface{}{"id":1,"uv":111.0,"pv":10,"name":"luyu","city":"长春"},
         map[string]interface{}{"id":2,"uv":100.0,"pv":10,"name":"luyu","city":"长春"},
@@ -18,7 +20,7 @@ data := []map[string]interface{}{
         fmt.Println(err)
     }
     cdb := gocatdb.Catdb{}
-    cdb.BindDb(db,"mysql")
+    cdb.BindDb(db,"sqlite3")
 
     cdb.Table("test").Create(data[0])
 
@@ -37,6 +39,10 @@ cdb := gocatdb.Catdb{}
 cdb.BindDb(db,"mysql")
 db为数据库连接
 mysql为数据库方言类型
+目前支持:
+- mysql
+- sqlite3
+
 ```
 ### 根据map创建表
 ```
