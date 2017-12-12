@@ -20,7 +20,7 @@ data := []map[string]interface{}{
     cdb := gocatdb.Catdb{}
     cdb.BindDb(db,"mysql")
 
-    cdb.Table("test").Create(data[0]).Execute()
+    cdb.Table("test").Create(data[0])
 
 
     cdb.Table("test").Insert(data)
@@ -40,7 +40,7 @@ mysql为数据库方言类型
 ```
 ### 根据map创建表
 ```
-cdb.Table("test").Create(mapdata).Execute()
+cdb.Table("test").Create(mapdata)
 ```
 ### 插入数据
 ```
@@ -55,4 +55,13 @@ cdb.Query(sql)
 返回一个map slice
 ```
 ### 修改
+例:将id为2的city修改为"吉林"
+```
+cdb.Table("test").Update(map[string]interface{}{"city":"吉林"},"id=2")
+```
+
 ### 删除
+例:将id为1的数据
+```
+cdb.Table("test").Delete("id=1")
+```
