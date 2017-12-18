@@ -15,6 +15,7 @@ type Catdb struct{
     sql string
     Columns []string
     dialect Dialect
+    current_err error
 }
 
 func (this *Catdb) BindDb(db *sql.DB,dialect string) {
@@ -155,32 +156,31 @@ func (this *Catdb) Sql() (string){
 
 func (this *Catdb) Execute() (sql.Result){
     stmt,err := this.db.Prepare(this.sql)
-    if err!=nil {
-        log.Println(err)
-    }
+    this.handleError(err)
     res,err := stmt.Exec()
-    if err!=nil{
-        log.Println(err)
-    }
+    this.handleError(err)
     return res
     // return this.sql
 }
 
 func (this *Catdb) Exec(args ...interface{}) {
     stmt,err := this.db.Prepare(this.sql)
-    if err!=nil {
-        fmt.Println("Exec error:", err)
-        panic(err)
-    }
+    this.handleError(err)
 
     _,err = stmt.Exec(args...)
-
-    if err!=nil {
-        fmt.Println("Exec error:", err)
-        panic(err)
-    }
+    this.handleError(err)
 
     stmt.Close()
 }
 
+func (this *Catdb) handleError( err error) {
+    if err!=nil{
+        log.Fatal(err)
+        this.current_err = err
+    }
+}
+
+func (this *Catdb) GetError() (error) {
+    return this.current_err
+}
 
