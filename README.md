@@ -1,6 +1,11 @@
 # gocatdb
 
 
+轻量级orm框架
+设计理念：
+1.不封装查询类sql，查询类sql很多情况相对复杂，框架封装后带来的学习成本较高，不如直接写sql来得快，对于条件拼接，框架可以提供辅助工具。
+2.insert update支持结构体，map，甚至直接传json
+
 Example:
 ```
     data := []map[string]interface{}{
